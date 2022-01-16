@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { Pair, Token, Bundle } from '../types/schema'
 import { BigDecimal, Address, BigInt } from '@graphprotocol/graph-ts/index'
-import { ZERO_BD, factoryContract, ADDRESS_ZERO, AVAX_BD } from './helpers'
+import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from './helpers'
 
 const WETH_ADDRESS = '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a'
 const USDC_WETH_PAIR = '0xf47f0cc859b78805a2852c744bc1fb6a676af087' // created block 12,747,725 
@@ -49,7 +49,7 @@ export function getEthPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a', // WAVAX
+  '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a', // WONE
   '0xe176ebe47d621b984a73036b9da5d834411ef734', // 1BUSD
   '0x985458e523db3d53125813ed68c274899e9dfab4', // 1USDC
   '0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f', // 1USDT
@@ -58,6 +58,7 @@ let WHITELIST: string[] = [
   '0x582617bd8ca80d22d4432e63fda52d74dcdcee4c', // ADA
   '0x6e7be5b9b4c9953434cd83950d61408f1ccc3bee', // Matic--poly
   '0xc0431ddcc0d213bf27ececa8c2362c0d0208c6dc', //openswap
+  '0xc0431ddcc0d213bf27ececa8c2362c0d0208c6dc', //AVAL
 ]
 
 // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
@@ -72,7 +73,7 @@ let MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString('2000')
  **/
 export function findEthPerToken(token: Token): BigDecimal {
   if (token.id == WETH_ADDRESS) {
-    return AVAX_BD
+    return ONE_BD
   }
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
@@ -94,7 +95,7 @@ export function findEthPerToken(token: Token): BigDecimal {
 
 /**
  * Accepts tokens and amounts, return tracked amount based on token whitelist
- * If AVAX token on whitelist, return amount in that token converted to USD.
+ * If one token on whitelist, return amount in that token converted to USD.
  * If both are, return average of two amounts
  * If neither is, return 0
  */
@@ -154,7 +155,7 @@ export function getTrackedVolumeUSD(
 
 /**
  * Accepts tokens and amounts, return tracked amount based on token whitelist
- * If AVAX token on whitelist, return amount in that token converted to USD * 2.
+ * If one token on whitelist, return amount in that token converted to USD * 2.
  * If both are, return sum of two amounts
  * If neither is, return 0
  */

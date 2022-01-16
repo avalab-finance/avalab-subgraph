@@ -17,7 +17,7 @@ import {
   convertTokenToDecimal,
   ADDRESS_ZERO,
   FACTORY_ADDRESS,
-  AVAX_BI,
+  ONE_BI,
   createUser,
   createLiquidityPosition,
   ZERO_BD,
@@ -69,7 +69,7 @@ export function handleTransfer(event: Transfer): void {
     pair.totalSupply = pair.totalSupply.plus(value)
     pair.save()
 
-    // create new mint if no mints so far or if last AVAX is done already
+    // create new mint if no mints so far or if last one is done already
     if (mints.length === 0 || isCompleteMint(mints[mints.length - 1])) {
       let mint = new MintEvent(
         event.transaction.hash
@@ -177,13 +177,13 @@ export function handleTransfer(event: Transfer): void {
       transaction.save()
     }
     burn.save()
-    // if accessing last AVAX, replace it
+    // if accessing last one, replace it
     if (burn.needsComplete) {
       // TODO: Consider using .slice(0, -1).concat() to protect against
       // unintended side effects for other code paths.
       burns[burns.length - 1] = burn.id
     }
-    // else add new AVAX
+    // else add new one
     else {
       // TODO: Consider using .concat() for handling array updates to protect
       // against unintended side effects for other code paths.
@@ -291,8 +291,8 @@ export function handleMint(event: Mint): void {
   let token1Amount = convertTokenToDecimal(event.params.amount1, token1.decimals)
 
   // update txn counts
-  token0.txCount = token0.txCount.plus(AVAX_BI)
-  token1.txCount = token1.txCount.plus(AVAX_BI)
+  token0.txCount = token0.txCount.plus(ONE_BI)
+  token1.txCount = token1.txCount.plus(ONE_BI)
 
   // get new amounts of USD and ETH for tracking
   let bundle = Bundle.load('1')
@@ -302,8 +302,8 @@ export function handleMint(event: Mint): void {
     .times(bundle.ethPrice)
 
   // update txn counts
-  pair.txCount = pair.txCount.plus(AVAX_BI)
-  uniswap.txCount = uniswap.txCount.plus(AVAX_BI)
+  pair.txCount = pair.txCount.plus(ONE_BI)
+  uniswap.txCount = uniswap.txCount.plus(ONE_BI)
 
   // save entities
   token0.save()
@@ -351,8 +351,8 @@ export function handleBurn(event: Burn): void {
   let token1Amount = convertTokenToDecimal(event.params.amount1, token1.decimals)
 
   // update txn counts
-  token0.txCount = token0.txCount.plus(AVAX_BI)
-  token1.txCount = token1.txCount.plus(AVAX_BI)
+  token0.txCount = token0.txCount.plus(ONE_BI)
+  token1.txCount = token1.txCount.plus(ONE_BI)
 
   // get new amounts of USD and ETH for tracking
   let bundle = Bundle.load('1')
@@ -362,8 +362,8 @@ export function handleBurn(event: Burn): void {
     .times(bundle.ethPrice)
 
   // update txn counts
-  uniswap.txCount = uniswap.txCount.plus(AVAX_BI)
-  pair.txCount = pair.txCount.plus(AVAX_BI)
+  uniswap.txCount = uniswap.txCount.plus(ONE_BI)
+  pair.txCount = pair.txCount.plus(ONE_BI)
 
   // update global counter and save
   token0.save()
@@ -436,15 +436,15 @@ export function handleSwap(event: Swap): void {
   token1.untrackedVolumeUSD = token1.untrackedVolumeUSD.plus(derivedAmountUSD)
 
   // update txn counts
-  token0.txCount = token0.txCount.plus(AVAX_BI)
-  token1.txCount = token1.txCount.plus(AVAX_BI)
+  token0.txCount = token0.txCount.plus(ONE_BI)
+  token1.txCount = token1.txCount.plus(ONE_BI)
 
   // update pair volume data, use tracked amount if we have it as its probably more accurate
   pair.volumeUSD = pair.volumeUSD.plus(trackedAmountUSD)
   pair.volumeToken0 = pair.volumeToken0.plus(amount0Total)
   pair.volumeToken1 = pair.volumeToken1.plus(amount1Total)
   pair.untrackedVolumeUSD = pair.untrackedVolumeUSD.plus(derivedAmountUSD)
-  pair.txCount = pair.txCount.plus(AVAX_BI)
+  pair.txCount = pair.txCount.plus(ONE_BI)
   pair.save()
 
   // update global values, only used tracked amounts for volume
@@ -452,7 +452,7 @@ export function handleSwap(event: Swap): void {
   uniswap.totalVolumeUSD = uniswap.totalVolumeUSD.plus(trackedAmountUSD)
   uniswap.totalVolumeETH = uniswap.totalVolumeETH.plus(trackedAmountETH)
   uniswap.untrackedVolumeUSD = uniswap.untrackedVolumeUSD.plus(derivedAmountUSD)
-  uniswap.txCount = uniswap.txCount.plus(AVAX_BI)
+  uniswap.txCount = uniswap.txCount.plus(ONE_BI)
 
   // save entities
   pair.save()

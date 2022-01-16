@@ -1,6 +1,6 @@
 specVersion: 0.0.2
-description: AVALab is a fork on Avalanche of uniswap a decentralized protocol for automated token exchange on Ethereum.
-repository: https://github.com/Uniswap/uniswap-v2-subgraph
+description: AVALab is a fork on Avalanche of UniSwap a decentralized protocol for automated token exchange on Ethereum.
+repository: https://github.com/avalab-finance/avalab-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
